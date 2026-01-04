@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tentang Saya - Website Kecamatan Purwokerto Utara</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --primary: #10b981;
+      --primary-dark: #059669;
+      --dark: #0f172a;
+      --slate-50: #f8fafc;
+      --slate-200: #e2e8f0;
+      --white: #ffffff;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { 
+      font-family: 'Poppins', sans-serif; 
+      background-color: var(--slate-50); 
+      color: #334155; 
+      line-height: 1.6;
+    }
+
+    .container { max-width: 1000px; margin: 0 auto; padding: 0 20px; }
+
+    /* HEADER */
+    header {
+      background: var(--dark);
+      padding: 15px 0;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+    nav { display: flex; justify-content: space-between; align-items: center; }
+    .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; color: white; }
+    .logo img { width: 35px; }
+    .nav-menu { display: flex; list-style: none; gap: 20px; }
+    .nav-menu a { text-decoration: none; color: rgba(255,255,255,0.7); font-size: 0.9rem; transition: 0.3s; }
+    .nav-menu a:hover, .nav-menu a.active { color: var(--primary); }
+
+    /* PROFILE SECTION */
+    .profile-hero {
+      padding: 80px 0 40px;
+      text-align: center;
+      background: linear-gradient(to bottom, #e2e8f0, var(--slate-50));
+    }
+    .profile-img-container {
+      width: 150px; height: 150px;
+      margin: 0 auto 20px;
+      border-radius: 50%;
+      border: 5px solid white;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      overflow: hidden;
+      transition: transform 0.5s ease;
+    }
+    .profile-img-container:hover { transform: scale(1.05) rotate(5deg); }
+    .profile-img-container img { width: 100%; height: 100%; object-fit: cover; }
+
+    .profile-hero h1 { font-size: 2rem; color: var(--dark); margin-bottom: 5px; }
+    .profile-hero p { color: var(--primary); font-weight: 600; text-transform: uppercase; letter-spacing: 2px; }
+
+    /* CONTENT SECTION */
+    .content-section { padding: 40px 0 80px; }
+    .card-about {
+      background: white;
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+      margin-bottom: 40px;
+      opacity: 0; /* Untuk animasi muncul */
+      transform: translateY(20px);
+      transition: all 0.6s ease;
+    }
+    .card-about.visible { opacity: 1; transform: translateY(0); }
+
+    /* SKILLS GRID */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin-top: 30px;
+    }
+    .skill-item {
+      background: #f1f5f9;
+      padding: 20px;
+      border-radius: 12px;
+      text-align: center;
+      transition: 0.3s;
+    }
+    .skill-item:hover { background: var(--primary); color: white; }
+    .skill-item i { font-size: 1.5rem; display: block; margin-bottom: 10px; }
+
+    /* FOOTER */
+    footer { background: var(--dark); color: #94a3b8; padding: 40px 0; text-align: center; }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      .nav-menu { display: none; }
+      .profile-hero h1 { font-size: 1.5rem; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <div class="container">
+      <nav>
+        <a href="index.html" class="logo">
+          <img src="img/kab-banyumas.png" alt="Logo">
+          <span style="font-weight: 700;">PURWOKERTO UTARA</span>
+        </a>
+        <ul class="nav-menu">
+          <li><a href="index.html">Beranda</a></li>
+          <li><a href="kec-pwt-utara/peta-kecamatan.html">Peta Kecamatan</a></li>
+          <li><a href="desa-sumampir/peta-desa.html">Peta Desa</a></li>
+          <li><a href="statistik.html">Data Statistik</a></li>
+          <li><a href="tentang.html" class="active">Tentang Saya</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <section class="profile-hero">
+    <div class="container">
+      <div class="profile-img-container">
+        <img src="img/fotosheina.jpeg" alt="Foto Profil" onerror="this.src='https://via.placeholder.com/150'">
+      </div>
+      <h1>Sheina Kartika Insani</h1>
+      <p>Web Developer & GIS Analyst</p>
+    </div>
+  </section>
+
+  <section class="content-section">
+    <div class="container">
+      <div class="card-about" id="aboutCard">
+        <h2 style="margin-bottom: 20px; border-left: 4px solid var(--primary); padding-left: 15px;">Halo, Sheina Kartika Insani!</h2>
+        <p style="margin-bottom: 15px;">
+          Saya adalah seorang pengembang web yang berfokus pada integrasi data spasial (GIS) untuk kebutuhan publik. 
+          Website ini dibangun sebagai bagian dari komitmen untuk membantu digitalisasi data di tingkat Kecamatan.
+        </p>
+        <p>
+          Fokus utama saya adalah menciptakan antarmuka yang mudah digunakan oleh masyarakat umum agar informasi 
+          batas wilayah dan statistik kependudukan dapat diakses secara transparan.
+        </p>
+
+        <div class="skills-grid">
+          <div class="skill-item">
+            <strong>Web Design</strong>
+            <p style="font-size: 0.8rem; margin-top: 5px;">HTML, CSS, JS</p>
+          </div>
+          <div class="skill-item">
+            <strong>GIS Mapping</strong>
+            <p style="font-size: 0.8rem; margin-top: 5px;">Spatial Data Analysis</p>
+          </div>
+          <div class="skill-item">
+            <strong>Data Viz</strong>
+            <p style="font-size: 0.8rem; margin-top: 5px;">Charts & Statistics</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <p>&copy; 2025 Azzam Aminudin. Dibuat dengan semangat digitalisasi.</p>
+    </div>
+  </footer>
+
+  <script>
+    // Efek Fade In saat halaman dimuat
+    document.addEventListener('DOMContentLoaded', () => {
+      const card = document.getElementById('aboutCard');
+      setTimeout(() => {
+        card.classList.add('visible');
+      }, 200);
+    });
+
+    // Efek interaktif sederhana saat hover skill
+    const skillItems = document.querySelectorAll('.skill-item');
+    skillItems.forEach(item => {
+      item.addEventListener('mouseenter', () => {
+        item.style.transform = 'translateY(-10px)';
+      });
+      item.addEventListener('mouseleave', () => {
+        item.style.transform = 'translateY(0)';
+      });
+    });
+  </script>
+</body>
+</html>

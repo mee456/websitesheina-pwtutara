@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Peta Desa Sumampir - Website Kecamatan Purwokerto Utara</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="./resources/ol.css">
+  <link rel="stylesheet" href="resources/fontawesome-all.min.css">
+  <link rel="stylesheet" href="./resources/ol-layerswitcher.css">
+  <link rel="stylesheet" href="./resources/qgis2web.css">
+
+  <style>
+    :root {
+      --primary: #10b981;
+      --primary-dark: #059669;
+      --dark: #0f172a;
+      --slate-50: #f8fafc;
+      --white: #ffffff;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Poppins', sans-serif; background: var(--slate-50); overflow: hidden; }
+
+    /* HEADER */
+    header {
+      background: var(--dark);
+      color: white;
+      padding: 0 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 60px;
+      position: relative;
+      z-index: 1000;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+    .logo-area { display: flex; align-items: center; gap: 10px; text-decoration: none; color: white; }
+    .logo-area img { width: 30px; }
+    
+    .nav-links { display: flex; gap: 15px; list-style: none; }
+    .nav-links a { color: rgba(255,255,255,0.7); text-decoration: none; font-size: 0.8rem; transition: 0.3s; }
+    .nav-links a:hover { color: var(--primary); }
+
+    /* MAIN CONTENT */
+    .layout {
+      display: flex;
+      height: calc(100vh - 60px);
+      position: relative;
+    }
+
+    /* SIDEBAR */
+    .sidebar {
+      width: 280px;
+      background: white;
+      padding: 20px;
+      overflow-y: auto;
+      border-right: 1px solid #e2e8f0;
+      transition: all 0.4s ease;
+      z-index: 500;
+    }
+
+    .sidebar h2 { font-size: 1.1rem; margin-bottom: 5px; color: var(--dark); }
+    .sidebar p { font-size: 0.75rem; color: #64748b; margin-bottom: 20px; }
+
+    .control-group {
+      background: #f1f5f9;
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 15px;
+      animation: fadeIn 0.5s ease;
+    }
+    .control-group h4 { font-size: 0.85rem; margin-bottom: 10px; display: flex; align-items: center; gap: 5px; }
+
+    /* CHECKBOX & RADIO */
+    .layer-item { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; font-size: 0.8rem; cursor: pointer; }
+    .layer-item input { accent-color: var(--primary); cursor: pointer; }
+
+    /* MAP CONTAINER */
+    #map {
+      flex-grow: 1;
+      position: relative;
+    }
+
+    /* FLOATING BUTTONS */
+    .map-tools {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      z-index: 400;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .btn-tool {
+      width: 40px; height: 40px; background: white; border: none; border-radius: 8px;
+      cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.1); display: flex;
+      align-items: center; justify-content: center; transition: 0.3s;
+    }
+    .btn-tool:hover { transform: scale(1.1); background: var(--primary); color: white; }
+
+    /* ANIMATIONS */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      .sidebar {
+        position: absolute;
+        left: -100%;
+        height: 100%;
+        width: 250px;
+      }
+      .sidebar.open { left: 0; box-shadow: 5px 0 15px rgba(0,0,0,0.1); }
+      .nav-links { display: none; }
+    }
+
+    /* POPUP STYLING (Standard qgis2web) */
+    .ol-popup {
+      background-color: white;
+      padding: 15px;
+      border-radius: 10px;
+      border: 1px solid #cccccc;
+      bottom: 12px;
+      left: -50px;
+      min-width: 180px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <a href="../index.html" class="logo-area">
+      <img src="../img/kab-banyumas.png" alt="Logo">
+      <span style="font-weight: 700;">DESA SUMAMPIR</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="../index.html">Beranda</a></li>
+      <li><a href="../kec-pwt-utara/peta-kecamatan.html">Kecamatan</a></li>
+      <li><a href="../statistik.html">Statistik</a></li>
+    </ul>
+    <button class="btn-tool" id="toggleSidebar" style="width: auto; padding: 0 12px; height: 32px; font-size: 0.75rem;">
+      ☰ Filter
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <h2>Peta Desa</h2>
+      <p>Detail Wilayah Sumampir</p>
+
+      <div class="control-group">
+        <h4>📍 Batas Administrasi</h4>
+        <label class="layer-item">
+          <input type="checkbox" checked onchange="toggleLyr('RW')"> Batas RW
+        </label>
+        <label class="layer-item">
+          <input type="checkbox" checked onchange="toggleLyr('Dusun')"> Batas Dusun
+        </label>
+      </div>
+
+      <div class="control-group">
+        <h4>🏠 Fasilitas Umum</h4>
+        <label class="layer-item">
+          <input type="checkbox" checked onchange="toggleLyr('RumahWarga')"> Rumah Warga
+        </label>
+        <label class="layer-item">
+          <input type="checkbox" checked onchange="toggleLyr('Jalan')"> Jaringan Jalan
+        </label>
+        <label class="layer-item">
+          <input type="checkbox" checked onchange="toggleLyr('Sungai')"> Aliran Sungai
+        </label>
+      </div>
+
+      <div style="margin-top: 40px; padding: 10px; font-size: 0.7rem; color: #94a3b8; text-align: center; border-top: 1px dashed #cbd5e1;">
+        Gunakan mouse/jari untuk navigasi peta.
+      </div>
+    </aside>
+
+    <div id="map">
+      <div class="map-tools">
+        <button class="btn-tool" onclick="location.reload()" title="Refresh">🔄</button>
+        <button class="btn-tool" id="fullBtn" title="Layar Penuh">⛶</button>
+      </div>
+      <div id="popup" class="ol-popup">
+        <a href="#" id="popup-closer" class="ol-popup-closer"></a>
+        <div id="popup-content"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="resources/qgis2web_expressions.js"></script>
+  <script src="./resources/functions.js"></script>
+  <script src="./resources/ol.js"></script>
+  <script src="./resources/ol-layerswitcher.js"></script>
+  
+  <!-- All Layer Data Files -->
+  <script src="layers/desasumampir_2.js"></script>
+  <script src="layers/dusun_3.js"></script>
+  <script src="layers/batasrw_4.js"></script>
+  <script src="layers/polygonkebunmakam_5.js"></script>
+  <script src="layers/sumampirkulon_6.js"></script>
+  <script src="layers/sumampirtengah_7.js"></script>
+  <script src="layers/KarangMiri_8.js"></script>
+  <script src="layers/kalisari_9.js"></script>
+  <script src="layers/perumgriyasatria_10.js"></script>
+  <script src="layers/sumampirwetan_11.js"></script>
+  <script src="layers/kel_sumampir_polygon_12.js"></script>
+  <script src="layers/rumahwarga_13.js"></script>
+  <script src="layers/rumahku_14.js"></script>
+  <script src="layers/desa_sumampir_point_15.js"></script>
+  <script src="layers/sumampir_point_16.js"></script>
+  <script src="layers/jalan_kab_17.js"></script>
+  <script src="layers/sungai_18.js"></script>
+  <script src="layers/jalan_desa_19.js"></script>
+  <script src="layers/jalan_kec_20.js"></script>
+
+  <!-- All Layer Style Files -->
+  <script src="styles/desasumampir_2_style.js"></script>
+  <script src="styles/dusun_3_style.js"></script>
+  <script src="styles/batasrw_4_style.js"></script>
+  <script src="styles/polygonkebunmakam_5_style.js"></script>
+  <script src="styles/sumampirkulon_6_style.js"></script>
+  <script src="styles/sumampirtengah_7_style.js"></script>
+  <script src="styles/KarangMiri_8_style.js"></script>
+  <script src="styles/kalisari_9_style.js"></script>
+  <script src="styles/perumgriyasatria_10_style.js"></script>
+  <script src="styles/sumampirwetan_11_style.js"></script>
+  <script src="styles/kel_sumampir_polygon_12_style.js"></script>
+  <script src="styles/rumahwarga_13_style.js"></script>
+  <script src="styles/rumahku_14_style.js"></script>
+  <script src="styles/desa_sumampir_point_15_style.js"></script>
+  <script src="styles/sumampir_point_16_style.js"></script>
+  <script src="styles/jalan_kab_17_style.js"></script>
+  <script src="styles/sungai_18_style.js"></script>
+  <script src="styles/jalan_desa_19_style.js"></script>
+  <script src="styles/jalan_kec_20_style.js"></script>
+
+  <script src="./layers/layers.js" type="text/javascript"></script> 
+  <script src="./resources/Autolinker.min.js"></script>
+  <script src="./resources/qgis2web.js"></script>
+
+  <script>
+    // 1. Sidebar Toggle Logic
+    const toggleBtn = document.getElementById('toggleSidebar');
+    const sidebar = document.getElementById('sidebar');
+    
+    toggleBtn.addEventListener('click', () => {
+      sidebar.classList.toggle('open');
+    });
+
+    // 2. Layar Penuh (Fullscreen)
+    document.getElementById('fullBtn').addEventListener('click', () => {
+      const mapDiv = document.getElementById('map');
+      if (!document.fullscreenElement) {
+        mapDiv.requestFullscreen();
+      } else {
+        document.exitFullscreen();
+      }
+    });
+
+    // 3. Fungsi Toggle Layer Sederhana (Contoh logic rendah)
+    function toggleLyr(lyrName) {
+      // Catatan: Nama variabel lyr_... harus sesuai dengan yang ada di layers.js Anda
+      if (lyrName === 'RW' && typeof lyr_batasrw_4 !== 'undefined') {
+        lyr_batasrw_4.setVisible(!lyr_batasrw_4.getVisible());
+      }
+      if (lyrName === 'Dusun' && typeof lyr_dusun_3 !== 'undefined') {
+        lyr_dusun_3.setVisible(!lyr_dusun_3.getVisible());
+      }
+      if (lyrName === 'RumahWarga' && typeof lyr_rumahwarga_13 !== 'undefined') {
+        lyr_rumahwarga_13.setVisible(!lyr_rumahwarga_13.getVisible());
+      }
+      // Tambahkan logika serupa untuk layer lainnya
+    }
+
+    // Efek Animasi Klik Tool
+    document.querySelectorAll('.btn-tool').forEach(btn => {
+      btn.addEventListener('click', function() {
+        this.style.transform = 'scale(0.9)';
+        setTimeout(() => this.style.transform = 'scale(1)', 100);
+      });
+    });
+  </script>
+</body>
+</html>
